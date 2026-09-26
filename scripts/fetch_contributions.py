@@ -1,7 +1,16 @@
 #!/usr/bin/env python3
-"""Fetch a GitHub user's public contribution calendar with no token, by
-scraping the same HTML fragment the profile page itself uses:
-https://github.com/users/<username>/contributions
+"""Fetch a GitHub user's contribution calendar by scraping the same HTML
+fragment the profile page itself uses: https://github.com/users/<username>/contributions
+
+By default this is a public, unauthenticated request, so it only sees
+public-repo activity — GitHub's own graph shows a higher total to the
+profile owner when logged in, because it privately counts contributions
+to private repos too. Set GH_SESSION_COOKIE (a live GitHub web session
+cookie, e.g. from the `user_session` cookie after logging in as the
+profile owner) to authenticate as the owner and match that fuller count.
+This is a session cookie, not an API token — treat it as sensitive, expect
+it to expire periodically, and know that the resulting total includes
+private-repo contribution counts that a public visitor cannot see.
 
 Writes data/contributions.json with raw days plus derived stats
 (current streak, longest streak, best day, monthly totals).
@@ -22,10 +31,32 @@ URL = f"https://github.com/users/{USERNAME}/contributions"
 OUT_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "contributions.json")
 
 
+def _authenticated_headers():
+    cookie = os.environ.get("GH_SESSION_COOKIE")
+    if not cookie:
+        return {"User-Agent": "Mozilla/5.0"}, False
+    return {"User-Agent": "Mozilla/5.0", "Cookie": f"user_session={cookie}; logged_in=yes"}, True
+
+
 def fetch_days():
-    resp = requests.get(URL, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
+    headers, tried_auth = _authenticated_headers()
+    resp = requests.get(URL, headers=headers, timeout=30)
     resp.raise_for_status()
     soup = BeautifulSoup(resp.text, "html.parser")
+
+    # GitHub sets its own logged_in=yes/no response cookie reflecting whether
+    # the session actually authenticated — the fragment's HTML looks the same
+    # either way (it's a public-viewable page), so that cookie is the only
+    # reliable signal an expired/invalid session cookie was silently ignored.
+    used_session_cookie = False
+    if tried_auth:
+        if resp.cookies.get("logged_in") == "yes":
+            used_session_cookie = True
+        else:
+            print("GH_SESSION_COOKIE set but didn't authenticate (expired?) — falling back to public data", file=sys.stderr)
+            resp = requests.get(URL, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
+            resp.raise_for_status()
+            soup = BeautifulSoup(resp.text, "html.parser")
 
     def count_from_tooltip(cell_id):
         if not cell_id:
@@ -79,7 +110,7 @@ def fetch_days():
             })
 
     days.sort(key=lambda x: x["date"])
-    return days
+    return days, used_session_cookie
 
 
 def derive_stats(days):
@@ -117,8 +148,9 @@ def derive_stats(days):
 
 
 def main():
-    days = fetch_days()
+    days, used_session_cookie = fetch_days()
     stats = derive_stats(days)
+    stats["includes_private_contributions"] = used_session_cookie
 
     payload = {
         "username": USERNAME,
@@ -130,7 +162,8 @@ def main():
     os.makedirs(os.path.dirname(OUT_PATH), exist_ok=True)
     with open(OUT_PATH, "w") as f:
         json.dump(payload, f, indent=2)
-    print(f"wrote {OUT_PATH} ({len(days)} days, {stats['total']} contributions)")
+    scope = "private+public" if used_session_cookie else "public only"
+    print(f"wrote {OUT_PATH} ({len(days)} days, {stats['total']} contributions, {scope})")
 
 
 if __name__ == "__main__":

@@ -133,6 +133,8 @@ def build_svg(payload):
         f'&#183; current streak {stats["current_streak"]}d '
         f'&#183; longest streak {stats["longest_streak"]}d'
     )
+    if stats.get("includes_private_contributions"):
+        footer_text += ' &#183; includes private contributions'
 
     svg = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {width} {height}"
      width="{width}" height="{height}">

@@ -20,6 +20,12 @@ jobs:
           python-version: "3.11"
       - run: pip install -r scripts/requirements.txt
       - run: python scripts/fetch_contributions.py IshaanM05
+        env:
+          # Optional: a live GitHub web session cookie (not an API token) for
+          # the profile owner, so the count matches the owner-only total
+          # shown on github.com (includes private-repo contributions). Falls
+          # back to a public-only count automatically if unset or expired.
+          GH_SESSION_COOKIE: ${{ secrets.GH_SESSION_COOKIE }}
       - run: python scripts/render_heatmap_svg.py
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
