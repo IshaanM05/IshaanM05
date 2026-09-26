@@ -25,7 +25,7 @@ BORDER = "#30363d"
 
 ROWS = [
     ("Now", "Perception Lead, IITB Racing"),
-    ("Prev", "Lead Intern, MapIoT AI (YC-backed)"),
+    ("Prev", "Lead Intern, MapIoT AI"),
     ("Stack", "C++ · Python · ROS 2 · PyTorch"),
     ("Highlights", "FSP Champion '26 · FSAI 4th '25"),
 ]

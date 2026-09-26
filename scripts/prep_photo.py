@@ -40,7 +40,7 @@ def _grabcut_cutout(bgr: np.ndarray) -> np.ndarray:
     # cutout boundary doesn't alias into noisy ASCII glyphs later.
     fg_mask = cv2.morphologyEx(fg_mask, cv2.MORPH_OPEN, np.ones((5, 5), np.uint8))
     fg_mask = cv2.morphologyEx(fg_mask, cv2.MORPH_CLOSE, np.ones((15, 15), np.uint8))
-    fg_mask = cv2.GaussianBlur(fg_mask, (9, 9), 0)
+    fg_mask = cv2.GaussianBlur(fg_mask, (3, 3), 0)
 
     rgba = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGBA)
     rgba[:, :, 3] = fg_mask
@@ -63,13 +63,13 @@ def prep(src_path: str, out_path: str = "source-prepped.png") -> None:
     white_bg = Image.new("RGBA", cutout.size, (255, 255, 255, 255))
     composited = Image.alpha_composite(white_bg, cutout).convert("RGB")
 
-    # 3. Denoise, then boost local contrast with CLAHE. A mild bilateral
-    # filter first removes the sensor-noise grain that CLAHE would otherwise
-    # amplify into speckle, while keeping edges (jawline, glasses) sharp.
+    # 3. Boost local contrast with CLAHE so facial features (eyes, jawline,
+    # glasses) separate clearly from skin tone. No pre-blur here — the ASCII
+    # grid downsample (LANCZOS) already averages away sensor grain; blurring
+    # first just erases the detail CLAHE needs to work with.
     gray = cv2.cvtColor(np.array(composited), cv2.COLOR_RGB2GRAY)
-    denoised = cv2.bilateralFilter(gray, d=7, sigmaColor=50, sigmaSpace=50)
-    clahe = cv2.createCLAHE(clipLimit=1.8, tileGridSize=(8, 8))
-    enhanced = clahe.apply(denoised)
+    clahe = cv2.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+    enhanced = clahe.apply(gray)
 
     Image.fromarray(enhanced).save(out_path)
     print(f"wrote {out_path}")

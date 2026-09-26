@@ -9,11 +9,9 @@ Usage: python scripts/make_ascii_svg.py [source-prepped.png] [out.svg]
 """
 import sys
 
-from PIL import Image
+from PIL import Image, ImageOps
 
-RAMP = " .`:-=+*cs#%@"  # bright (sparse) -> dark (dense)
-COLS = 100
-ROWS = 53
+RAMP = " .`:-=+*cs#%@"  # bright (sparse) -> dark (dense); fine gradation to avoid a blotchy, binary look
 CHAR_W = 6.2
 CHAR_H = 11
 FONT_SIZE = 12
@@ -22,12 +20,25 @@ BG = "transparent"
 STAGGER = 0.03  # seconds between row starts
 ROW_DURATION = 0.35
 
+# The README embeds this SVG at DISPLAY_WIDTH. Sizing the character grid so
+# each glyph lands near CHAR_W (its native size) means the portrait reads as
+# an actual face at display size instead of blurring into a gray block —
+# but that only works if DISPLAY_WIDTH is generous enough to fit real detail
+# (a face needs on the order of 80+ columns to resolve eyes/nose/mouth; 100
+# cols needs ~620px here, not the 370px a cramped two-column layout implies).
+DISPLAY_WIDTH = 490
+COLS = round(DISPLAY_WIDTH / CHAR_W)
+
 
 def image_to_ascii_grid(img: Image.Image, cols: int, rows: int) -> list[str]:
     # LANCZOS averages each output pixel over a wide source neighborhood,
     # so fine sensor/CLAHE grain gets smoothed out instead of aliasing into
     # visual noise the way a nearest/bilinear downsample would.
     img = img.convert("L").resize((cols, rows), Image.LANCZOS)
+    # A gentle stretch only clips the extreme 0.3% tails (near-pure white
+    # background, deepest shadow) — enough to use the full ramp without
+    # crushing every midtone to solid black like an aggressive cutoff does.
+    img = ImageOps.autocontrast(img, cutoff=0.3)
     pixels = img.load()
     ramp_len = len(RAMP)
     grid = []
@@ -47,8 +58,10 @@ def escape(ch: str) -> str:
 
 
 def build_svg(grid: list[str]) -> str:
-    width = COLS * CHAR_W
-    height = ROWS * CHAR_H
+    rows = len(grid)
+    cols = len(grid[0]) if rows else 0
+    width = cols * CHAR_W
+    height = rows * CHAR_H
     rows_svg = []
 
     for i, row in enumerate(grid):
@@ -78,7 +91,7 @@ def build_svg(grid: list[str]) -> str:
 
     # cursor block that rides the wipe edge of each row, staggered same as rows
     cursors = []
-    for i in range(ROWS):
+    for i in range(rows):
         y = (i + 1) * CHAR_H - 2
         start = i * STAGGER
         end = start + ROW_DURATION
@@ -118,7 +131,9 @@ def main():
     out = sys.argv[2] if len(sys.argv) > 2 else "ishaan-ascii.svg"
 
     img = Image.open(src)
-    grid = image_to_ascii_grid(img, COLS, ROWS)
+    aspect = img.height / img.width
+    rows = round(COLS * aspect * (CHAR_W / CHAR_H))
+    grid = image_to_ascii_grid(img, COLS, rows)
     svg = build_svg(grid)
 
     with open(out, "w") as f:

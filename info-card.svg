@@ -37,7 +37,7 @@
           begin="0.52s" dur="0.50s" fill="freeze"
           calcMode="spline" keySplines="0.25 0.1 0.25 1" />
       <text x="24" y="100" class="key">Prev</text>
-      <text x="132" y="100" class="val">Lead Intern, MapIoT AI (YC-backed)</text>
+      <text x="132" y="100" class="val">Lead Intern, MapIoT AI</text>
     </g>
     <g opacity="0" transform="translate(-16,0)">
         <animate attributeName="opacity" from="0" to="1"
