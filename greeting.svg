@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 110"
+     width="980" height="110">
+  <defs>
+    <clipPath id="line1-clip">
+      <rect x="0" y="0" width="0" height="110">
+        <animate attributeName="width" from="0" to="514.5"
+          begin="0.2s" dur="1.40s" fill="freeze"
+          calcMode="spline" keySplines="0.4 0 0.2 1" />
+      </rect>
+    </clipPath>
+  </defs>
+  <style>
+    text {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      white-space: pre;
+    }
+    .line1 { font-size: 40px; font-weight: bold; fill: #39d353; }
+    .line2 { font-size: 18px; fill: #8b949e; }
+  </style>
+
+  <text x="0" y="52" class="line1" clip-path="url(#line1-clip)">Hi, I'm Ishaan Mondal</text>
+
+  <rect class="cursor" x="0" y="18" width="13.5" height="40" fill="#39d353" opacity="0">
+    <animate attributeName="x" from="0" to="514.5"
+      begin="0.2s" dur="1.40s" fill="freeze"
+      calcMode="spline" keySplines="0.4 0 0.2 1" />
+    <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.02;0.92;1"
+      begin="0.2s" dur="1.40s" fill="freeze" />
+  </rect>
+
+  <text x="2" y="82" class="line2" opacity="0">
+    Perception Lead @ IITB Racing Driverless · CS/AI undergrad, IIT Bombay
+    <animate attributeName="opacity" from="0" to="1"
+      begin="1.55s" dur="0.60s" fill="freeze" />
+  </text>
+</svg>

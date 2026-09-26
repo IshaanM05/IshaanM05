@@ -1,8 +1,22 @@
 <div align="center">
 
+<img src="./greeting.svg" width="700" />
+
+<a href="https://www.linkedin.com/in/ishaan-mondal">
+  <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=flat-square&logo=linkedin&logoColor=white" alt="LinkedIn"/>
+</a>
+<img src="https://komarev.com/ghpvc/?username=IshaanM05&style=flat-square&color=39d353" alt="Profile views" />
+
+<br><br>
+
 <h3><code>ishaan@github ~ $ ./contributions.sh</code></h3>
 
 <img src="./contrib-heatmap.svg" width="980" />
+
+<br><br>
+
+<img src="https://raw.githubusercontent.com/IshaanM05/IshaanM05/output/github-contribution-grid-snake-dark.svg#gh-dark-mode-only" width="980" />
+<img src="https://raw.githubusercontent.com/IshaanM05/IshaanM05/output/github-contribution-grid-snake.svg#gh-light-mode-only" width="980" />
 
 <br><br>
 
