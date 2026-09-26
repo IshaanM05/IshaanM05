@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="./physical-ai.svg" width="700" />
+
 <img src="./greeting.svg" width="700" />
 
 <a href="https://www.linkedin.com/in/ishaan-mondal">
