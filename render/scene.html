@@ -1,0 +1,142 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>html,body{margin:0;padding:0;background:transparent;overflow:hidden;}</style>
+</head>
+<body>
+<canvas id="c" width="900" height="360"></canvas>
+<script type="importmap">
+{
+  "imports": {
+    "three": "./node_modules/three/build/three.module.js",
+    "three/addons/": "./node_modules/three/examples/jsm/"
+  }
+}
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const W = 900, H = 360;
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+renderer.setSize(W, H, false);
+renderer.setPixelRatio(1);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 0.85;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0d1117);
+
+const camera = new THREE.PerspectiveCamera(32, W / H, 0.1, 100);
+camera.position.set(0, 1.1, 9.5);
+camera.lookAt(0, 0.1, 0);
+
+// Procedural environment map for realistic PBR reflections (no external HDRI file).
+const pmrem = new THREE.PMREMGenerator(renderer);
+const envRT = pmrem.fromScene(new RoomEnvironment(), 0.04);
+scene.environment = envRT.texture;
+
+// ---- Root group: everything in here rotates exactly 360deg over the loop ----
+const root = new THREE.Group();
+scene.add(root);
+
+// Outer glossy metallic shell (icosahedron), dark chrome-like PBR material.
+const shellGeo = new THREE.IcosahedronGeometry(1.65, 1);
+const shellMat = new THREE.MeshPhysicalMaterial({
+  color: 0x1a2530,
+  metalness: 0.25,
+  roughness: 0.15,
+  clearcoat: 1.0,
+  clearcoatRoughness: 0.1,
+  envMapIntensity: 0.6,
+  transparent: true,
+  opacity: 0.32,
+  side: THREE.DoubleSide,
+  depthWrite: false,
+});
+const shell = new THREE.Mesh(shellGeo, shellMat);
+root.add(shell);
+
+// Inner glowing wireframe core, counter-rotates for parallax depth.
+const coreGroup = new THREE.Group();
+root.add(coreGroup);
+const coreGeo = new THREE.IcosahedronGeometry(0.95, 1);
+const coreWire = new THREE.LineSegments(
+  new THREE.WireframeGeometry(coreGeo),
+  new THREE.LineBasicMaterial({ color: 0x39d353, transparent: true, opacity: 0.9 })
+);
+coreGroup.add(coreWire);
+const coreGlow = new THREE.Mesh(
+  coreGeo,
+  new THREE.MeshBasicMaterial({ color: 0x39d353, transparent: true, opacity: 0.06 })
+);
+coreGroup.add(coreGlow);
+
+// Emissive accent lines across the shell's edges (subtle circuit-like glow).
+const edgeGeo = new THREE.EdgesGeometry(shellGeo);
+const edgeMat = new THREE.LineBasicMaterial({ color: 0x39d353, transparent: true, opacity: 0.5 });
+const edges = new THREE.LineSegments(edgeGeo, edgeMat);
+root.add(edges);
+
+// Orbiting particle field, parented to root so it loops seamlessly.
+const particleCount = 140;
+const particleGeo = new THREE.BufferGeometry();
+const positions = new Float32Array(particleCount * 3);
+for (let i = 0; i < particleCount; i++) {
+  const r = 2.4 + Math.random() * 2.0;
+  const theta = Math.random() * Math.PI * 2;
+  const phi = Math.acos((Math.random() * 2) - 1);
+  positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+  positions[i * 3 + 1] = r * Math.cos(phi) * 0.6;
+  positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+}
+particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+const particleMat = new THREE.PointsMaterial({
+  color: 0x39d353, size: 0.035, transparent: true, opacity: 0.75, sizeAttenuation: true,
+});
+const particles = new THREE.Points(particleGeo, particleMat);
+root.add(particles);
+
+// Lighting: key + rim, both cool-toned to match the terminal-green accent.
+const key = new THREE.DirectionalLight(0xffffff, 0.9);
+key.position.set(4, 5, 4);
+scene.add(key);
+const rim = new THREE.DirectionalLight(0x39d353, 1.1);
+rim.position.set(-5, 2, -4);
+scene.add(rim);
+const fill = new THREE.AmbientLight(0x0f1420, 0.5);
+scene.add(fill);
+const accentPoint = new THREE.PointLight(0x39d353, 1.8, 8);
+accentPoint.position.set(0, 0.3, 2.2);
+scene.add(accentPoint);
+
+// ---- Post-processing: subtle bloom for the glow ----
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloom = new UnrealBloomPass(new THREE.Vector2(W, H), 0.5, 0.4, 0.35);
+composer.addPass(bloom);
+composer.addPass(new OutputPass());
+
+// ---- Deterministic frame rendering, driven by an explicit time param ----
+// window.renderFrame(t) with t in [0,1) renders exactly one loop position,
+// so puppeteer can capture perfectly-looping frames regardless of real time.
+window.renderFrame = function (t) {
+  root.rotation.y = t * Math.PI * 2;
+  coreGroup.rotation.y = -t * Math.PI * 2 * 1.6;
+  coreGroup.rotation.x = t * Math.PI * 2 * 0.4;
+  const pulse = 0.06 + 0.03 * Math.sin(t * Math.PI * 2 * 2);
+  coreGlow.material.opacity = pulse;
+  accentPoint.intensity = 5.0 + 2.5 * Math.sin(t * Math.PI * 2 * 2);
+  composer.render();
+};
+
+window.__ready = true;
+</script>
+</body>
+</html>

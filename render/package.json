@@ -1,0 +1,9 @@
+{
+  "name": "physical-ai-render",
+  "private": true,
+  "description": "Build tooling for physical-ai.webp — not needed to view the profile, only to regenerate the animation.",
+  "dependencies": {
+    "three": "^0.186.1",
+    "puppeteer": "^25.12.0"
+  }
+}

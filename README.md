@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./physical-ai.svg" width="700" />
+<img src="./physical-ai.webp" width="700" />
 
 <img src="./greeting.svg" width="700" />
 
