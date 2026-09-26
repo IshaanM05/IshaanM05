@@ -10,7 +10,7 @@ Usage: python scripts/make_greeting_svg.py
 WIDTH = 980
 HEIGHT = 110
 LINE1 = "Hi, I'm Ishaan Mondal"
-LINE2 = "Perception Lead @ IITB Racing Driverless · CS/AI undergrad, IIT Bombay"
+LINE2 = "Perception Lead @ IITB Racing Driverless · ME + AI/DS minor, IIT Bombay"
 
 FONT_SIZE_1 = 40
 FONT_SIZE_2 = 18

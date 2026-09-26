@@ -29,7 +29,7 @@
   </rect>
 
   <text x="2" y="82" class="line2" opacity="0">
-    Perception Lead @ IITB Racing Driverless · CS/AI undergrad, IIT Bombay
+    Perception Lead @ IITB Racing Driverless · ME + AI/DS minor, IIT Bombay
     <animate attributeName="opacity" from="0" to="1"
       begin="1.55s" dur="0.60s" fill="freeze" />
   </text>
