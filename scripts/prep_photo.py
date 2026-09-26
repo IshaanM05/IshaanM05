@@ -34,10 +34,13 @@ def _grabcut_cutout(bgr: np.ndarray) -> np.ndarray:
     margin_x, margin_y = int(w * 0.08), int(h * 0.04)
     rect = (margin_x, margin_y, w - 2 * margin_x, h - 2 * margin_y)
 
-    cv2.grabCut(bgr, mask, rect, bgd_model, fgd_model, 5, cv2.GC_INIT_WITH_RECT)
+    cv2.grabCut(bgr, mask, rect, bgd_model, fgd_model, 8, cv2.GC_INIT_WITH_RECT)
     fg_mask = np.where((mask == cv2.GC_FGD) | (mask == cv2.GC_PR_FGD), 255, 0).astype("uint8")
-    fg_mask = cv2.morphologyEx(fg_mask, cv2.MORPH_CLOSE, np.ones((7, 7), np.uint8))
-    fg_mask = cv2.GaussianBlur(fg_mask, (5, 5), 0)
+    # Clean up small speckle holes/islands, then feather the edge so the
+    # cutout boundary doesn't alias into noisy ASCII glyphs later.
+    fg_mask = cv2.morphologyEx(fg_mask, cv2.MORPH_OPEN, np.ones((5, 5), np.uint8))
+    fg_mask = cv2.morphologyEx(fg_mask, cv2.MORPH_CLOSE, np.ones((15, 15), np.uint8))
+    fg_mask = cv2.GaussianBlur(fg_mask, (9, 9), 0)
 
     rgba = cv2.cvtColor(bgr, cv2.COLOR_BGR2RGBA)
     rgba[:, :, 3] = fg_mask
@@ -60,10 +63,13 @@ def prep(src_path: str, out_path: str = "source-prepped.png") -> None:
     white_bg = Image.new("RGBA", cutout.size, (255, 255, 255, 255))
     composited = Image.alpha_composite(white_bg, cutout).convert("RGB")
 
-    # 3. Boost local contrast with CLAHE on the grayscale version.
+    # 3. Denoise, then boost local contrast with CLAHE. A mild bilateral
+    # filter first removes the sensor-noise grain that CLAHE would otherwise
+    # amplify into speckle, while keeping edges (jawline, glasses) sharp.
     gray = cv2.cvtColor(np.array(composited), cv2.COLOR_RGB2GRAY)
-    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
-    enhanced = clahe.apply(gray)
+    denoised = cv2.bilateralFilter(gray, d=7, sigmaColor=50, sigmaSpace=50)
+    clahe = cv2.createCLAHE(clipLimit=1.8, tileGridSize=(8, 8))
+    enhanced = clahe.apply(denoised)
 
     Image.fromarray(enhanced).save(out_path)
     print(f"wrote {out_path}")

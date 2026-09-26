@@ -16,7 +16,7 @@
   <circle cx="18" cy="20" r="5" fill="#ff5f56"/><circle cx="34" cy="20" r="5" fill="#ffbd2e"/><circle cx="50" cy="20" r="5" fill="#27c93f"/>
   <g opacity="0">
       <animate attributeName="opacity" from="0" to="1" begin="0.05s" dur="0.3s" fill="freeze" />
-    <text x="245.0" y="24" text-anchor="middle" class="title">avi@github</text>
+    <text x="245.0" y="24" text-anchor="middle" class="title">ishaan@github</text>
   </g>
 
     <g opacity="0" transform="translate(-16,0)">
@@ -27,7 +27,7 @@
           begin="0.40s" dur="0.50s" fill="freeze"
           calcMode="spline" keySplines="0.25 0.1 0.25 1" />
       <text x="24" y="70" class="key">Now</text>
-      <text x="132" y="70" class="val">Building SVG profile automations</text>
+      <text x="132" y="70" class="val">Perception Lead, IITB Racing</text>
     </g>
     <g opacity="0" transform="translate(-16,0)">
         <animate attributeName="opacity" from="0" to="1"
@@ -37,7 +37,7 @@
           begin="0.52s" dur="0.50s" fill="freeze"
           calcMode="spline" keySplines="0.25 0.1 0.25 1" />
       <text x="24" y="100" class="key">Prev</text>
-      <text x="132" y="100" class="val">ML entity resolution, indexing at scale</text>
+      <text x="132" y="100" class="val">Lead Intern, MapIoT AI (YC-backed)</text>
     </g>
     <g opacity="0" transform="translate(-16,0)">
         <animate attributeName="opacity" from="0" to="1"
@@ -47,7 +47,7 @@
           begin="0.64s" dur="0.50s" fill="freeze"
           calcMode="spline" keySplines="0.25 0.1 0.25 1" />
       <text x="24" y="130" class="key">Stack</text>
-      <text x="132" y="130" class="val">Python · TypeScript · React</text>
+      <text x="132" y="130" class="val">C++ · Python · ROS 2 · PyTorch</text>
     </g>
     <g opacity="0" transform="translate(-16,0)">
         <animate attributeName="opacity" from="0" to="1"
@@ -57,6 +57,6 @@
           begin="0.76s" dur="0.50s" fill="freeze"
           calcMode="spline" keySplines="0.25 0.1 0.25 1" />
       <text x="24" y="160" class="key">Highlights</text>
-      <text x="132" y="160" class="val">Open-source contributor · CS undergrad</text>
+      <text x="132" y="160" class="val">FSP Champion '26 · FSAI 4th '25</text>
     </g>
 </svg>

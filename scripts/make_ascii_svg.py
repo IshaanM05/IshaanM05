@@ -24,7 +24,10 @@ ROW_DURATION = 0.35
 
 
 def image_to_ascii_grid(img: Image.Image, cols: int, rows: int) -> list[str]:
-    img = img.convert("L").resize((cols, rows))
+    # LANCZOS averages each output pixel over a wide source neighborhood,
+    # so fine sensor/CLAHE grain gets smoothed out instead of aliasing into
+    # visual noise the way a nearest/bilinear downsample would.
+    img = img.convert("L").resize((cols, rows), Image.LANCZOS)
     pixels = img.load()
     ramp_len = len(RAMP)
     grid = []
@@ -112,7 +115,7 @@ def build_svg(grid: list[str]) -> str:
 
 def main():
     src = sys.argv[1] if len(sys.argv) > 1 else "source-prepped.png"
-    out = sys.argv[2] if len(sys.argv) > 2 else "avi-ascii.svg"
+    out = sys.argv[2] if len(sys.argv) > 2 else "ishaan-ascii.svg"
 
     img = Image.open(src)
     grid = image_to_ascii_grid(img, COLS, ROWS)

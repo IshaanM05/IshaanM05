@@ -13,7 +13,7 @@ WIDTH = 490
 LINE_H = 30
 PAD_TOP = 70
 PAD_X = 24
-TITLE = "avi@github"
+TITLE = "ishaan@github"
 STATIC = os.environ.get("STATIC") == "1"
 
 ACCENT = "#39d353"
@@ -24,10 +24,10 @@ BG = "#0d1117"
 BORDER = "#30363d"
 
 ROWS = [
-    ("Now", "Building SVG profile automations"),
-    ("Prev", "ML entity resolution, indexing at scale"),
-    ("Stack", "Python · TypeScript · React"),
-    ("Highlights", "Open-source contributor · CS undergrad"),
+    ("Now", "Perception Lead, IITB Racing"),
+    ("Prev", "Lead Intern, MapIoT AI (YC-backed)"),
+    ("Stack", "C++ · Python · ROS 2 · PyTorch"),
+    ("Highlights", "FSP Champion '26 · FSAI 4th '25"),
 ]
 
 STAGGER = 0.12
