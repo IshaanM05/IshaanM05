@@ -13,6 +13,8 @@
 
 <img src="./contrib-heatmap.svg" width="980" />
 
+<sub><i>Public repositories only. GitHub's own contribution graph further down this page includes private-repo activity too.</i></sub>
+
 <br><br>
 
 <img src="https://raw.githubusercontent.com/IshaanM05/IshaanM05/output/github-contribution-grid-snake-dark.svg#gh-dark-mode-only" width="980" />
