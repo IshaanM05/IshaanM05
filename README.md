@@ -49,4 +49,25 @@
 
 **Tools** &nbsp; ![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white) ![SolidWorks](https://img.shields.io/badge/SolidWorks-C51122?style=flat-square) ![Blender](https://img.shields.io/badge/Blender-F5792A?style=flat-square&logo=blender&logoColor=white)
 
+<br><br>
+
+<h3><code>ishaan@github ~ $ cat stats.log</code></h3>
+
+<table>
+  <tr>
+    <td><img src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=IshaanM05&theme=github_dark" alt="Profile details"/></td>
+    <td><img src="https://github-readme-streak-stats.herokuapp.com/?user=IshaanM05&theme=merko" alt="Contribution streak"/></td>
+  </tr>
+  <tr>
+    <td><img src="https://github-profile-summary-cards.vercel.app/api/cards/stats?username=IshaanM05&theme=github_dark" alt="GitHub stats"/></td>
+    <td><img src="https://github-profile-summary-cards.vercel.app/api/cards/repos-per-language?username=IshaanM05&theme=github_dark" alt="Repos per language"/></td>
+  </tr>
+  <tr>
+    <td><img src="https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=IshaanM05&theme=github_dark" alt="Most commit language"/></td>
+    <td><img src="https://github-profile-summary-cards.vercel.app/api/cards/productive-time?username=IshaanM05&theme=github_dark&utcOffset=5" alt="Productive time"/></td>
+  </tr>
+</table>
+
+<sub><i>Hosted by third-party services (vercel.app, herokuapp.com) — may occasionally rate-limit or go down, unlike the rest of this profile.</i></sub>
+
 </div>
