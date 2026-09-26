@@ -5,11 +5,14 @@ fragment the profile page itself uses: https://github.com/users/<username>/contr
 By default this is a public, unauthenticated request, so it only sees
 public-repo activity — GitHub's own graph shows a higher total to the
 profile owner when logged in, because it privately counts contributions
-to private repos too. Set GH_SESSION_COOKIE (a live GitHub web session
-cookie, e.g. from the `user_session` cookie after logging in as the
-profile owner) to authenticate as the owner and match that fuller count.
-This is a session cookie, not an API token — treat it as sensitive, expect
-it to expire periodically, and know that the resulting total includes
+to private repos too. Set GH_SESSION_COOKIE to authenticate as the owner
+and match that fuller count: the full, raw `Cookie:` request header value
+from a logged-in browser tab (DevTools -> Network -> reload -> click the
+first github.com request -> Headers -> Request Headers -> copy the whole
+"cookie" value) -- not just one cookie by name, since GitHub's session
+validation can depend on more than the user_session cookie alone. This is
+live session data, not an API token — treat it as sensitive, expect it to
+expire periodically, and know that the resulting total includes
 private-repo contribution counts that a public visitor cannot see.
 
 Writes data/contributions.json with raw days plus derived stats
@@ -35,7 +38,9 @@ def _authenticated_headers():
     cookie = os.environ.get("GH_SESSION_COOKIE")
     if not cookie:
         return {"User-Agent": "Mozilla/5.0"}, False
-    return {"User-Agent": "Mozilla/5.0", "Cookie": f"user_session={cookie}; logged_in=yes"}, True
+    # Expect the full raw Cookie header string copied from DevTools, not a
+    # single named cookie — forward it verbatim rather than reconstructing it.
+    return {"User-Agent": "Mozilla/5.0", "Cookie": cookie.strip()}, True
 
 
 def fetch_days():
