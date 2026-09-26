@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 190"
+     width="980" height="190">
+  <style>
+    text {
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 14px;
+    }
+    .key { fill: #39d353; font-weight: bold; }
+    .val { fill: #c9d1d9; }
+    .title { fill: #8b949e; font-size: 13px; }
+  </style>
+  <rect x="0.5" y="0.5" width="979" height="189" rx="8"
+    fill="#0d1117" stroke="#30363d" />
+  <rect x="0.5" y="0.5" width="979" height="36" rx="8" fill="#161b22" />
+  <rect x="0.5" y="28.5" width="979" height="8" fill="#161b22" />
+  <circle cx="18" cy="20" r="5" fill="#ff5f56"/><circle cx="34" cy="20" r="5" fill="#ffbd2e"/><circle cx="50" cy="20" r="5" fill="#27c93f"/>
+  <g opacity="0">
+      <animate attributeName="opacity" from="0" to="1" begin="0.05s" dur="0.3s" fill="freeze" />
+    <text x="490.0" y="24" text-anchor="middle" class="title">ishaan@github</text>
+  </g>
+
+    <g opacity="0" transform="translate(-16,0)">
+        <animate attributeName="opacity" from="0" to="1"
+          begin="0.40s" dur="0.50s" fill="freeze" />
+        <animateTransform attributeName="transform" type="translate"
+          from="-16,0" to="0,0"
+          begin="0.40s" dur="0.50s" fill="freeze"
+          calcMode="spline" keySplines="0.25 0.1 0.25 1" />
+      <text x="24" y="70" class="key">Interests</text>
+      <text x="174" y="70" class="val">Computer Vision · Robotics Perception · Autonomous Systems · SLAM</text>
+    </g>
+    <g opacity="0" transform="translate(-16,0)">
+        <animate attributeName="opacity" from="0" to="1"
+          begin="0.52s" dur="0.50s" fill="freeze" />
+        <animateTransform attributeName="transform" type="translate"
+          from="-16,0" to="0,0"
+          begin="0.52s" dur="0.50s" fill="freeze"
+          calcMode="spline" keySplines="0.25 0.1 0.25 1" />
+      <text x="24" y="102" class="key">Exploring</text>
+      <text x="174" y="102" class="val">Sensor Fusion · Motion Planning · Reinforcement Learning · Real-Time Systems</text>
+    </g>
+    <g opacity="0" transform="translate(-16,0)">
+        <animate attributeName="opacity" from="0" to="1"
+          begin="0.64s" dur="0.50s" fill="freeze" />
+        <animateTransform attributeName="transform" type="translate"
+          from="-16,0" to="0,0"
+          begin="0.64s" dur="0.50s" fill="freeze"
+          calcMode="spline" keySplines="0.25 0.1 0.25 1" />
+      <text x="24" y="134" class="key">Looking For</text>
+      <text x="174" y="134" class="val">Summer '27 Internships · Research Collaborations · Open-Source Robotics Projects</text>
+    </g>
+</svg>
